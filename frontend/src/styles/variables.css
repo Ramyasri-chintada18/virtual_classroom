@@ -1,0 +1,53 @@
+:root {
+    /* Brand Colors - EduTech Blue Theme */
+    --primary: #2563eb;
+    /* Core Band Color */
+    --primary-hover: #1d4ed8;
+    --secondary: #64748b;
+    /* Neutral/Slate */
+    --accent: #f59e0b;
+    /* Warning/Highlight */
+    --danger: #ef4444;
+    /* Errors/Leave Call */
+    --success: #22c55e;
+    /* Connected/Go */
+
+    /* Background Layers - Deep Space Strategy */
+    --bg-dark: #0f172a;
+    /* Main App Background */
+    --bg-card: #1e293b;
+    /* Panel/Card Background */
+    --bg-hover: #334155;
+    /* Interactivity */
+
+    /* Text Hierarchy */
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --text-dark: #0f172a;
+
+    /* Spacing System (4px Grid) */
+    --spacing-xs: 0.25rem;
+    /* 4px */
+    --spacing-sm: 0.5rem;
+    /* 8px */
+    --spacing-md: 1rem;
+    /* 16px */
+    --spacing-lg: 1.5rem;
+    /* 24px */
+    --spacing-xl: 2rem;
+    /* 32px */
+
+    /* Layout Dimensions */
+    --header-height: 60px;
+    --footer-height: 80px;
+    --sidebar-width: 320px;
+
+    /* Borders & Radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --border-color: #334155;
+
+    /* Animations */
+    --transition-fast: 0.2s ease;
+}

@@ -1,0 +1,87 @@
+.classroom-layout {
+    display: grid;
+    grid-template-areas:
+        "header  header"
+        "stage   sidebar"
+        "footer  footer";
+    grid-template-columns: 1fr var(--sidebar-width);
+    grid-template-rows: var(--header-height) 1fr var(--footer-height);
+    height: 100vh;
+    width: 100vw;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    overflow: hidden;
+}
+
+/* --- Area Definitions --- */
+
+.layout-header {
+    grid-area: header;
+    background-color: var(--bg-card);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    padding: 0 var(--spacing-md);
+    z-index: 20;
+}
+
+.layout-stage {
+    grid-area: stage;
+    background-color: var(--bg-dark);
+    position: relative;
+    overflow: hidden;
+    padding: var(--spacing-sm);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.layout-sidebar {
+    grid-area: sidebar;
+    background-color: var(--bg-card);
+    border-left: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    z-index: 15;
+    transition: transform var(--transition-fast);
+}
+
+.layout-footer {
+    grid-area: footer;
+    background-color: var(--bg-card);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-lg);
+    padding: 0 var(--spacing-lg);
+    z-index: 20;
+}
+
+/* --- Responsive Adaptations --- */
+
+@media (max-width: 900px) {
+    .classroom-layout {
+        grid-template-areas:
+            "header"
+            "stage"
+            "footer";
+        grid-template-columns: 1fr;
+        grid-template-rows: var(--header-height) 1fr var(--footer-height);
+    }
+
+    .layout-sidebar {
+        position: absolute;
+        top: var(--header-height);
+        right: 0;
+        bottom: var(--footer-height);
+        width: var(--sidebar-width);
+        transform: translateX(100%);
+        /* Hidden by default */
+    }
+
+    .layout-sidebar.open {
+        transform: translateX(0);
+        box-shadow: -4px 0 10px rgba(0, 0, 0, 0.3);
+    }
+}
