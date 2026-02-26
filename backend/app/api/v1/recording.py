@@ -18,7 +18,7 @@ async def upload_recording(
     current_user: User = Depends(get_current_user),
     service: RecordingService = Depends(get_recording_service)
 ):
-    return await service.save_recording(room_id, file)
+    return await service.save_recording(room_id, file, current_user.id)
 
 @router.get("/{room_id}", response_model=List[RecordingResponse])
 async def list_room_recordings(
@@ -27,3 +27,9 @@ async def list_room_recordings(
     service: RecordingService = Depends(get_recording_service)
 ):
     return await service.list_recordings(room_id)
+@router.get("/my", response_model=List[RecordingResponse])
+async def list_user_recordings(
+    current_user: User = Depends(get_current_user),
+    service: RecordingService = Depends(get_recording_service)
+):
+    return await service.list_user_recordings(current_user.id)

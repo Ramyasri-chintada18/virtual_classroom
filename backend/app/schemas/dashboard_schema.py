@@ -17,6 +17,8 @@ class MyClassResponse(BaseModel):
     description: Optional[str]
     created_by: str  # Name of host
     created_at: datetime
+    scheduled_date: Optional[str] = None
+    start_time: Optional[str] = None
     total_participants: int
 
 class DashboardClasses(BaseModel):

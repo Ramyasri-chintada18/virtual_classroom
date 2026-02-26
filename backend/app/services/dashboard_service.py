@@ -57,6 +57,8 @@ class DashboardService:
                 description=room.description,
                 created_by=host.full_name if host else "Unknown",
                 created_at=room.created_at,
+                scheduled_date=room.scheduled_date,
+                start_time=room.start_time,
                 total_participants=p_count
             ))
         return result
