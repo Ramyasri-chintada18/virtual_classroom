@@ -1,28 +1,38 @@
 import React from 'react';
 import { useAuth } from '../../store/AuthStore';
+import { Search, Bell, Settings, LogOut, Menu } from 'lucide-react';
 import Button from './Button';
 import './Navbar.css';
 
-const Navbar = () => {
+const Navbar = ({ toggleSidebar, isSidebarOpen }) => {
     const { user, logout } = useAuth();
 
     return (
         <nav className="navbar">
             <div className="navbar-left">
+                <button className="menu-toggle-btn" onClick={toggleSidebar}>
+                    <Menu size={20} />
+                </button>
                 <div className="navbar-logo">
-                    <span className="logo-icon">V</span>
                     <span className="logo-text">Virtual Classroom</span>
                 </div>
+            </div>
+
+            <div className="navbar-center">
                 <div className="navbar-search">
-                    <span className="search-icon">🔍</span>
+                    <Search className="search-icon" size={18} />
                     <input type="text" placeholder="Search classes, recordings..." />
                 </div>
             </div>
 
             <div className="navbar-right">
                 <div className="navbar-actions">
-                    <button className="nav-action-btn">🔔</button>
-                    <button className="nav-action-btn">⚙️</button>
+                    <button className="nav-action-btn">
+                        <Bell size={20} />
+                    </button>
+                    <button className="nav-action-btn">
+                        <Settings size={20} />
+                    </button>
                 </div>
                 {user && (
                     <div className="user-profile">
@@ -31,14 +41,9 @@ const Navbar = () => {
                             <span className="user-name">{user.email.split('@')[0]}</span>
                             <span className="user-role-badge">{user.role}</span>
                         </div>
-                        <Button
-                            variant="secondary"
-                            size="sm"
-                            onClick={logout}
-                            className="logout-button"
-                        >
-                            Logout
-                        </Button>
+                        <button className="logout-icon-btn" onClick={logout} title="Logout">
+                            <LogOut size={18} />
+                        </button>
                     </div>
                 )}
             </div>

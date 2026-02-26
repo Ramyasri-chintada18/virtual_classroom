@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Card from '../../components/common/Card';
 import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
@@ -6,9 +7,20 @@ import ClassroomService from '../../services/classroom.service';
 import './StudentDashboard.css';
 
 const StudentDashboard = () => {
+    const navigate = useNavigate();
     const [progress, setProgress] = useState(null);
     const [classes, setClasses] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [roomCode, setRoomCode] = useState('');
+
+    const handleJoinClass = (code) => {
+        const id = code || roomCode;
+        if (!id) {
+            alert('Please enter a Room Code');
+            return;
+        }
+        navigate(`/classroom/${id}`);
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -38,8 +50,13 @@ const StudentDashboard = () => {
                     <p className="subtitle">Ready to learn something new today?</p>
                 </div>
                 <div className="join-class-quick">
-                    <Input placeholder="Enter Room Code" className="join-input-wrapper" />
-                    <Button variant="primary">Join</Button>
+                    <Input
+                        placeholder="Enter Room Code"
+                        className="join-input-wrapper"
+                        value={roomCode}
+                        onChange={(e) => setRoomCode(e.target.value)}
+                    />
+                    <Button variant="primary" onClick={() => handleJoinClass()}>Join</Button>
                 </div>
             </header>
 
@@ -63,7 +80,11 @@ const StudentDashboard = () => {
                             <p>Instructor: {cls.instructor}</p>
                             <div className="course-footer">
                                 <Button variant="ghost" size="sm">Materials</Button>
-                                <Button size="sm" variant={cls.status === 'live' ? 'primary' : 'secondary'}>
+                                <Button
+                                    size="sm"
+                                    variant={cls.status === 'live' ? 'primary' : 'secondary'}
+                                    onClick={() => handleJoinClass(cls.id)}
+                                >
                                     {cls.status === 'live' ? 'Enter Live Room' : 'View Schedule'}
                                 </Button>
                             </div>

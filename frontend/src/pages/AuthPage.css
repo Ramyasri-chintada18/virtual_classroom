@@ -1,46 +1,61 @@
-.auth-card {
-    backdrop-filter: blur(20px);
-    background-color: rgba(30, 41, 59, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    padding: var(--spacing-xl);
+/* Auth Page Container */
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg-main);
+    padding: 24px;
 }
 
+/* Auth Card */
+.auth-card {
+    background-color: var(--bg-surface);
+    border-radius: 14px;
+    box-shadow: var(--shadow-soft);
+    padding: 32px;
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid var(--border-soft);
+}
+
+/* Header */
 .auth-header {
     text-align: center;
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: 32px;
 }
 
 .auth-logo {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--spacing-sm);
-    margin-bottom: var(--spacing-xs);
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.logo-icon {
+    font-size: 24px;
+    color: var(--primary);
 }
 
 .auth-logo h2 {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     font-weight: 700;
-    background: linear-gradient(to right, var(--primary), var(--accent));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    /* Compatibility fix from earlier lint */
+    color: var(--text-main);
+    margin: 0;
 }
 
 .auth-subtitle {
     color: var(--text-muted);
-    font-size: 0.9rem;
+    font-size: 0.95rem;
 }
 
+/* Footer & Links */
 .auth-footer {
     text-align: center;
-    margin-top: var(--spacing-lg);
-    font-size: 0.85rem;
+    margin-top: 24px;
+    font-size: 0.9rem;
     color: var(--text-muted);
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    padding-top: var(--spacing-md);
 }
 
 .text-link {
@@ -48,11 +63,14 @@
     background: none;
     border: none;
     cursor: pointer;
-    padding: 0;
+    padding: 0 0 0 4px;
     font-size: inherit;
-    font-weight: 500;
+    font-weight: 600;
+    transition: color var(--transition-fast);
 }
 
 .text-link:hover {
+    color: #6d28d9;
+    /* Darker purple */
     text-decoration: underline;
 }

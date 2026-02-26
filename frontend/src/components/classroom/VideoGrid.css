@@ -1,48 +1,119 @@
 .video-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: var(--spacing-md);
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: var(--spacing-lg);
     width: 100%;
     height: 100%;
+    padding: var(--spacing-md);
     overflow-y: auto;
+    align-items: center;
+    justify-content: center;
 }
 
 .video-tile {
-    background-color: #000;
-    border-radius: var(--radius-md);
     position: relative;
-    aspect-ratio: 16/9;
+    background-color: #0f172a;
+    border-radius: var(--radius-lg);
     overflow: hidden;
-    border: 1px solid var(--border-color);
+    aspect-ratio: 16/9;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
 }
 
-.video-placeholder {
+.video-tile.camera-off {
+    background-color: #1e293b;
+}
+
+.local-video-feed {
     width: 100%;
     height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--bg-card);
+    object-fit: cover;
+    transform: scaleX(-1);
+    /* Mirror effect for self-view */
 }
 
-.avatar-circle {
-    width: 60px;
-    height: 60px;
+.avatar-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.avatar-circle.large {
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     background-color: var(--primary);
+    color: white;
     display: flex;
-    justify-content: center;
     align-items: center;
-    font-size: 1.5rem;
-    font-weight: bold;
+    justify-content: center;
+    font-size: 3rem;
+    font-weight: 700;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
-.video-name {
+.participant-label {
     position: absolute;
-    bottom: var(--spacing-sm);
-    left: var(--spacing-sm);
-    background-color: rgba(0, 0, 0, 0.6);
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.8rem;
+    bottom: 16px;
+    left: 16px;
+    background-color: rgba(15, 23, 42, 0.7);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mic-status-icon {
+    color: #ef4444;
+}
+
+.video-status-overlay {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background-color: rgba(15, 23, 42, 0.6);
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+}
+
+.video-error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-align: center;
+    gap: 12px;
+}
+
+.video-error-state p {
+    margin: 0;
+    font-weight: 600;
+}
+
+.video-error-state small {
+    opacity: 0.7;
+}
+
+.text-danger {
+    color: #ef4444;
 }

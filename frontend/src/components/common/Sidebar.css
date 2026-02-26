@@ -1,85 +1,78 @@
 .sidebar {
     grid-area: sidebar;
-    background-color: var(--bg-card);
-    border-right: 1px solid var(--border-color);
+    background-color: var(--bg-surface);
+    border-right: 1px solid var(--border-soft);
     display: flex;
     flex-direction: column;
-    padding: var(--spacing-md) 0;
+    padding: 16px 12px;
+    height: 100%;
 }
 
 .sidebar-menu {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-xs);
-    padding: 0 var(--spacing-sm);
+    gap: 8px;
 }
 
 .sidebar-item {
     display: flex;
     align-items: center;
-    gap: var(--spacing-md);
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: var(--radius-md);
-    color: var(--text-muted);
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
     text-decoration: none;
+    color: var(--text-muted);
+    font-weight: 500;
     transition: all var(--transition-fast);
+    font-size: 0.95rem;
 }
 
 .sidebar-item:hover {
-    background-color: var(--bg-hover);
+    background-color: var(--hover-soft);
     color: var(--text-main);
 }
 
 .sidebar-item.active {
-    background-color: rgba(37, 99, 235, 0.1);
+    background-color: var(--primary-soft);
     color: var(--primary);
 }
 
 .item-icon {
-    width: 24px;
-    font-weight: bold;
-    opacity: 0.7;
+    opacity: 0.8;
+}
+
+.sidebar-item.active .item-icon {
+    opacity: 1;
+}
+
+.item-text {
+    font-size: 0.95rem;
 }
 
 .sidebar-footer {
-    padding: var(--spacing-md);
-}
-
-.sidebar-ad {
-    background-color: var(--bg-dark);
-    padding: var(--spacing-sm);
-    border-radius: var(--radius-md);
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    text-align: center;
-    border: 1px solid var(--border-color);
+    border-top: 1px solid var(--border-soft);
+    padding-top: 16px;
+    margin-top: auto;
 }
 
 .sidebar-logout-btn {
+    width: 100%;
     display: flex;
     align-items: center;
-    gap: var(--spacing-md);
-    padding: var(--spacing-sm) var(--spacing-md);
-    width: 100%;
+    gap: 12px;
+    padding: 10px 12px;
     background: transparent;
     border: none;
     color: var(--text-muted);
-    font-size: 0.95rem;
-    font-weight: 500;
+    border-radius: 8px;
     cursor: pointer;
+    font-weight: 500;
     transition: all var(--transition-fast);
-    border-radius: var(--radius-md);
-    margin-top: var(--spacing-md);
+    font-size: 0.95rem;
 }
 
 .sidebar-logout-btn:hover {
-    background-color: rgba(239, 68, 68, 0.1);
+    background-color: #fef2f2;
     color: #ef4444;
-}
-
-.sidebar-logout-btn .item-icon {
-    font-size: 1.2rem;
-    width: 24px;
-    text-align: center;
 }

@@ -24,20 +24,21 @@
 }
 
 .form-textarea {
-    background: var(--bg-dark);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-soft);
     border-radius: var(--radius-md);
     color: var(--text-main);
     padding: 12px;
     font-size: 0.95rem;
     transition: all var(--transition-fast);
     resize: none;
+    width: 100%;
 }
 
 .form-textarea:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    box-shadow: 0 0 0 2px var(--primary-soft);
 }
 
 .form-row {
@@ -52,5 +53,5 @@
     gap: var(--spacing-md);
     margin-top: var(--spacing-md);
     padding-top: var(--spacing-lg);
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: 1px solid var(--border-soft);
 }

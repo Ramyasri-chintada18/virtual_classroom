@@ -1,51 +1,184 @@
 .navbar {
     grid-area: navbar;
-    background-color: var(--bg-card);
-    border-bottom: 1px solid var(--border-color);
+    background-color: var(--bg-surface);
+    border-bottom: 1px solid var(--border-soft);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 var(--spacing-lg);
+    padding: 0 24px;
     z-index: 100;
 }
 
+.navbar-left,
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+/* Logo */
 .navbar-logo {
     display: flex;
     align-items: center;
-    gap: var(--spacing-sm);
+    gap: 12px;
+}
+
+.logo-text {
     font-weight: 700;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+    color: var(--text-main);
+    letter-spacing: -0.01em;
 }
 
-.logo-icon {
-    background: var(--primary);
-    color: white;
-    width: 32px;
-    height: 32px;
+/* Center Search Container */
+.navbar-center {
+    flex: 1;
     display: flex;
-    align-items: center;
     justify-content: center;
-    border-radius: var(--radius-sm);
+    padding: 0 24px;
 }
 
-.user-profile {
+/* Search */
+.navbar-search {
     display: flex;
     align-items: center;
-    gap: var(--spacing-md);
+    background-color: var(--hover-soft);
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    padding: 0 16px;
+    width: 100%;
+    max-width: 600px;
+    /* Increased length */
+    height: 44px;
+    /* Slightly taller */
+    transition: all var(--transition-fast);
 }
 
-.user-email {
-    font-size: 0.9rem;
+.navbar-search:focus-within {
+    background-color: var(--bg-surface);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px var(--primary-soft);
+}
+
+.search-icon {
+    color: var(--text-muted);
+    margin-right: 12px;
+}
+
+.navbar-search input {
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    width: 100%;
+    outline: none;
+    font-size: 0.95rem;
+}
+
+.navbar-search input::placeholder {
     color: var(--text-muted);
 }
 
-.user-role-badge {
-    background-color: var(--bg-dark);
-    color: var(--primary);
-    font-size: 0.75rem;
-    padding: 2px 8px;
-    border-radius: 12px;
-    text-transform: uppercase;
+/* Menu Toggle Button */
+.menu-toggle-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+}
+
+.menu-toggle-btn:hover {
+    background-color: var(--hover-soft);
+    color: var(--text-main);
+}
+
+/* Actions */
+.navbar-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.nav-action-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+}
+
+.nav-action-btn:hover {
+    background-color: var(--hover-soft);
+    color: var(--text-main);
+}
+
+/* User Profile */
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-left: 16px;
+    border-left: 1px solid var(--border-soft);
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    line-height: 1.2;
+}
+
+.user-name {
+    font-size: 0.9rem;
     font-weight: 600;
-    border: 1px solid var(--primary);
+    color: var(--text-main);
+}
+
+.user-role-badge {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: capitalize;
+}
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    background-color: var(--primary-soft);
+    color: var(--primary);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.logout-icon-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+    margin-left: 8px;
+}
+
+.logout-icon-btn:hover {
+    background-color: #fef2f2;
+    color: #ef4444;
 }

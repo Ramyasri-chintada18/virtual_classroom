@@ -1,2 +1,0 @@
-# Video Processing Worker
-pass

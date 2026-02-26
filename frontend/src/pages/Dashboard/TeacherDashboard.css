@@ -1,60 +1,201 @@
 .teacher-dashboard {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-xl);
+    gap: var(--space-8);
 }
 
 .dashboard-content-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-end;
+    margin-bottom: var(--space-2);
+}
+
+.dashboard-content-header h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0 0 var(--space-1) 0;
+    letter-spacing: -0.02em;
 }
 
 .subtitle {
     color: var(--text-muted);
-    font-size: 0.9rem;
+    font-size: 1rem;
+    margin: 0;
 }
 
+/* Stats Grid */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: var(--spacing-md);
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--space-6);
+}
+
+/* Card Styling for Stats */
+.stats-grid .card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    transition: transform var(--transition-fast);
+}
+
+.stats-grid .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
 .stat-value {
-    font-size: 2rem;
-    font-weight: 700;
+    font-size: 2.25rem;
+    font-weight: 800;
     color: var(--primary);
+    line-height: 1.2;
+    margin-top: var(--space-2);
 }
 
+.stat-label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Upcoming Classes */
 .upcoming-classes h3 {
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--space-4);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-main);
 }
 
 .classes-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-sm);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--space-5);
 }
 
-.class-item-card .card-body {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.class-item-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    padding: var(--space-5);
+    transition: border-color var(--transition-fast);
+}
+
+.class-item-card:hover {
+    border-color: var(--primary);
 }
 
 .class-info h4 {
-    margin-bottom: 4px;
+    margin: 0 0 var(--space-1) 0;
+    font-size: 1.1rem;
+    color: var(--text-main);
+    font-weight: 600;
 }
 
-.class-info p {
-    font-size: 0.8rem;
-    color: var(--accent);
+.class-info p,
+.schedule-info p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.schedule-info {
+    margin: 0 0 var(--space-3) 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.live-status {
+    color: var(--primary) !important;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--space-3) !important;
 }
 
 .student-count {
-    display: block;
-    font-size: 0.75rem;
+    display: inline-block;
+    font-size: 0.8rem;
     color: var(--text-muted);
-    margin-top: 4px;
+    background-color: #f3f4f6;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+/* Class Details Popup */
+.class-details-popup {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+}
+
+.details-message {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+}
+
+.room-id-container {
+    background: #f8fafc;
+    border: 1px dashed var(--primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.room-id-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.room-id-value {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary);
+    word-break: break-all;
+    text-align: center;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+}
+
+/* Button Polishing */
+.btn-join {
+    font-weight: 600 !important;
+    transition: all var(--transition-short) !important;
+}
+
+.btn-join:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+.btn-prepare {
+    border: 1.5px solid var(--primary) !important;
+    color: var(--primary) !important;
+    background: transparent !important;
+    font-weight: 600 !important;
+    transition: all var(--transition-short) !important;
+}
+
+.btn-prepare:hover {
+    background: rgba(124, 102, 255, 0.05) !important;
+    transform: translateY(-1px);
 }

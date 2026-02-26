@@ -1,2 +1,0 @@
-# Permission Helpers
-pass

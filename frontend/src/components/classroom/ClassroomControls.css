@@ -1,0 +1,66 @@
+.classroom-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-md);
+    width: 100%;
+    height: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.controls-group {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    background-color: var(--bg-main);
+    padding: 6px;
+    border-radius: 30px;
+    border: 1px solid var(--border-soft);
+}
+
+.control-btn {
+    width: 44px;
+    height: 44px;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast) !important;
+    box-shadow: none !important;
+}
+
+.control-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+.leave-btn {
+    position: absolute;
+    right: 0;
+    border-radius: 12px !important;
+    padding: 0 24px !important;
+    font-weight: 700 !important;
+    height: 48px !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2) !important;
+}
+
+.animate-pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.7;
+        transform: scale(1.1);
+    }
+}

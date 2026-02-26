@@ -10,6 +10,7 @@ const ClassroomService = {
                 id: room.class_id,
                 title: room.class_name,
                 instructor: room.created_by,
+                date: room.scheduled_date || 'TBD',
                 time: room.start_time || 'TBD',
                 status: 'upcoming',
                 students: room.total_participants || 0
@@ -62,11 +63,11 @@ const ClassroomService = {
     },
 
     async getStudentProgress() {
-        // Still mocking progress for now
+        // Return initial state
         return {
-            completedLessons: 12,
-            pendingAssignments: 3,
-            attendanceRate: '92%'
+            completedLessons: 0,
+            pendingAssignments: 0,
+            attendanceRate: '0%'
         };
     }
 };

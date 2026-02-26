@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../store/AuthStore';
+import { LayoutDashboard, BookOpen, Video, Calendar, Settings, LogOut } from 'lucide-react';
 import './Sidebar.css';
 
 const Sidebar = () => {
@@ -14,7 +15,7 @@ const Sidebar = () => {
                     to={`/dashboard/${role}`}
                     className={({ isActive }) => `sidebar-item ${isActive ? 'active' : ''}`}
                 >
-                    <span className="item-icon">📊</span>
+                    <LayoutDashboard size={20} />
                     <span className="item-text">Overview</span>
                 </NavLink>
 
@@ -22,7 +23,7 @@ const Sidebar = () => {
                     to="/classes"
                     className={({ isActive }) => `sidebar-item ${isActive ? 'active' : ''}`}
                 >
-                    <span className="item-icon">📚</span>
+                    <BookOpen size={20} />
                     <span className="item-text">My Classes</span>
                 </NavLink>
 
@@ -30,7 +31,7 @@ const Sidebar = () => {
                     to="/recordings"
                     className={({ isActive }) => `sidebar-item ${isActive ? 'active' : ''}`}
                 >
-                    <span className="item-icon">🎥</span>
+                    <Video size={20} />
                     <span className="item-text">Recordings</span>
                 </NavLink>
 
@@ -38,7 +39,7 @@ const Sidebar = () => {
                     to="/calendar"
                     className={({ isActive }) => `sidebar-item ${isActive ? 'active' : ''}`}
                 >
-                    <span className="item-icon">📅</span>
+                    <Calendar size={20} />
                     <span className="item-text">Calendar</span>
                 </NavLink>
 
@@ -46,17 +47,14 @@ const Sidebar = () => {
                     to="/settings"
                     className={({ isActive }) => `sidebar-item ${isActive ? 'active' : ''}`}
                 >
-                    <span className="item-icon">⚙️</span>
+                    <Settings size={20} />
                     <span className="item-text">Settings</span>
                 </NavLink>
             </div>
 
             <div className="sidebar-footer">
-                <div className="sidebar-ad">
-                    <p>Upgrade to Pro for more features!</p>
-                </div>
                 <button className="sidebar-logout-btn" onClick={logout}>
-                    <span className="item-icon">🚪</span>
+                    <LogOut size={20} />
                     <span className="item-text">Logout</span>
                 </button>
             </div>
