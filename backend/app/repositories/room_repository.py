@@ -35,3 +35,12 @@ class RoomRepository:
 
     async def get_participants(self, room_id: UUID) -> List[Participant]:
         return await Participant.find(Participant.room_id == room_id).to_list()
+
+    async def delete_room(self, room_id: UUID) -> bool:
+        room = await self.get_room_by_id(room_id)
+        if room:
+            await room.delete()
+            # Also delete participants for this room
+            await Participant.find(Participant.room_id == room_id).delete()
+            return True
+        return False

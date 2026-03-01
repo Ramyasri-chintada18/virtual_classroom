@@ -7,11 +7,13 @@ from app.schemas.user_schema import UserResponse
 
 class RoomBase(BaseModel):
     title: str
+    subject: str = "General"
     description: Optional[str] = None
     is_active: bool = True
     capacity: int = 50
     date: Optional[str] = None
     time: Optional[str] = None
+    end_time: Optional[str] = None
 
 class RoomCreate(RoomBase):
     pass
@@ -19,6 +21,7 @@ class RoomCreate(RoomBase):
 class RoomResponse(BaseModel):
     id: UUID
     title: str
+    subject: str = "General"
     description: Optional[str] = None
     host_id: PydanticObjectId
     status: str

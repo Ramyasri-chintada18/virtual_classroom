@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 from uuid import UUID, uuid4
 from beanie import Document, PydanticObjectId
 from pydantic import Field
@@ -11,6 +12,8 @@ class Recording(Document):
     file_url: str
     size_bytes: int
     duration_seconds: int = 0
+    subject: str = "General"
+    description: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
     class Settings:

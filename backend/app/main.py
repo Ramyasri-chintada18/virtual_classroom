@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.core.config import settings
 from app.db.engine import init_db
-from app.api.v1 import auth, classroom, websocket, recording, dashboard
+from app.api.v1 import auth, classroom, websocket, recording, dashboard, teacher
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -39,6 +39,7 @@ def create_application() -> FastAPI:
     application.include_router(dashboard.router, prefix=f"{settings.API_V1_STR}/dashboard", tags=["dashboard"])
     application.include_router(classroom.router, prefix=f"{settings.API_V1_STR}/classrooms", tags=["classrooms"])
     application.include_router(recording.router, prefix=f"{settings.API_V1_STR}/recordings", tags=["recordings"])
+    application.include_router(teacher.router, prefix=f"{settings.API_V1_STR}/teacher", tags=["teacher"])
     application.include_router(websocket.router, tags=["websockets"])
     
     return application

@@ -29,3 +29,11 @@ class RecordingService:
 
     async def list_user_recordings(self, user_id: PydanticObjectId) -> List[Recording]:
         return await Recording.find(Recording.uploaded_by == user_id).to_list()
+
+    async def delete_recording(self, recording_id: UUID):
+        recording = await Recording.find_one(Recording.id == recording_id)
+        if recording:
+            # Note: In a real app, you'd also delete the file from StorageService
+            await recording.delete()
+            return {"status": "success", "message": "Recording deleted"}
+        return {"status": "error", "message": "Recording not found"}

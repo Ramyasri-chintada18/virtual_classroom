@@ -19,6 +19,7 @@ class RoomStatus(str, Enum):
 class Room(Document):
     id: UUID = Field(default_factory=uuid4)
     title: str
+    subject: str = "General"
     description: Optional[str] = None
     host_id: PydanticObjectId # Reference to User
     is_active: bool = True

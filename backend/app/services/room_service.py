@@ -24,3 +24,6 @@ class RoomService:
 
     async def get_participants(self, room_id: UUID) -> List[Participant]:
         return await self.room_repo.get_participants(room_id)
+
+    async def delete_room(self, room_id: UUID) -> bool:
+        return await self.room_repo.delete_room(room_id)

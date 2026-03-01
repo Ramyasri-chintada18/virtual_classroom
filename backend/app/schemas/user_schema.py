@@ -6,6 +6,7 @@ from app.models.user_model import UserRole
 # Base Properties
 class UserBase(BaseModel):
     email: EmailStr
+    user_id: str
     full_name: Optional[str] = None
     role: UserRole = UserRole.STUDENT
     is_active: bool = True
