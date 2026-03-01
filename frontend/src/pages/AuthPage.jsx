@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import AuthLayout from '../layouts/AuthLayout';
 import Card from '../components/common/Card';
 import RoleSwitcher from '../components/auth/RoleSwitcher';
@@ -12,14 +12,21 @@ const AuthPage = () => {
     const [mode, setMode] = useState('login'); // 'login' | 'signup'
     const { login, signup } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
 
     const handleAuth = async (data) => {
         console.log('Form submission:', { mode, role, data });
         if (mode === 'login') {
             const result = await login(role, data);
             if (result.success) {
-                console.log('Login success - navigating to dashboard');
-                navigate(`/dashboard/${role}`);
+                const fromPath = location.state?.from?.pathname || `/dashboard/${role}`;
+                const fromSearch = location.state?.from?.search || '';
+                const destination = fromPath + fromSearch;
+
+                console.log('Login success - Original state found:', location.state?.from);
+                console.log(`Login success - Redirecting to: ${destination}`);
+
+                navigate(destination, { replace: true });
             } else {
                 console.error('Login failed:', result.message);
                 alert(result.message);

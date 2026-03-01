@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import Card from '../../components/common/Card';
 import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
@@ -8,6 +8,7 @@ import './StudentDashboard.css';
 
 const StudentDashboard = () => {
     const navigate = useNavigate();
+    const { searchQuery } = useOutletContext();
     const [progress, setProgress] = useState(null);
     const [classes, setClasses] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -39,6 +40,15 @@ const StudentDashboard = () => {
         };
         fetchData();
     }, []);
+
+    // Filter classes based on search query
+    const filteredClasses = classes.filter(cls => {
+        const title = cls.title || '';
+        const instructor = cls.instructor || '';
+        const query = searchQuery?.toLowerCase() || '';
+        return title.toLowerCase().includes(query) ||
+            instructor.toLowerCase().includes(query);
+    });
 
     if (loading) return <div className="loading">Loading Dashboard...</div>;
 
@@ -75,21 +85,27 @@ const StudentDashboard = () => {
             <section className="enrolled-classes">
                 <h3>My Enrolled Classes</h3>
                 <div className="classes-grid">
-                    {classes.map(cls => (
-                        <Card key={cls.id} title={cls.title} className="course-card">
-                            <p>Instructor: {cls.instructor}</p>
-                            <div className="course-footer">
-                                <Button variant="ghost" size="sm">Materials</Button>
-                                <Button
-                                    size="sm"
-                                    variant={cls.status === 'live' ? 'primary' : 'secondary'}
-                                    onClick={() => handleJoinClass(cls.id)}
-                                >
-                                    {cls.status === 'live' ? 'Enter Live Room' : 'View Schedule'}
-                                </Button>
-                            </div>
-                        </Card>
-                    ))}
+                    {filteredClasses.length === 0 ? (
+                        <div className="no-results">
+                            <p>{searchQuery ? `No classes found matching "${searchQuery}"` : "You are not enrolled in any classes yet."}</p>
+                        </div>
+                    ) : (
+                        filteredClasses.map(cls => (
+                            <Card key={cls.id} title={cls.title} className="course-card">
+                                <p>Instructor: {cls.instructor}</p>
+                                <div className="course-footer">
+                                    <Button variant="ghost" size="sm">Materials</Button>
+                                    <Button
+                                        size="sm"
+                                        variant={cls.status === 'live' ? 'primary' : 'secondary'}
+                                        onClick={() => handleJoinClass(cls.id)}
+                                    >
+                                        {cls.status === 'live' ? 'Enter Live Room' : 'View Schedule'}
+                                    </Button>
+                                </div>
+                            </Card>
+                        ))
+                    )}
                 </div>
             </section>
         </div>

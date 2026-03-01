@@ -6,6 +6,7 @@ import './DashboardLayout.css';
 
 const DashboardLayout = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [searchQuery, setSearchQuery] = useState('');
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
@@ -13,10 +14,15 @@ const DashboardLayout = () => {
 
     return (
         <div className={`dashboard-layout ${!isSidebarOpen ? 'sidebar-closed' : ''}`}>
-            <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+            <Navbar
+                toggleSidebar={toggleSidebar}
+                isSidebarOpen={isSidebarOpen}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+            />
             {isSidebarOpen && <Sidebar />}
             <main className="dashboard-main">
-                <Outlet />
+                <Outlet context={{ searchQuery }} />
             </main>
         </div>
     );

@@ -6,9 +6,11 @@ import './CreateClassForm.css';
 const CreateClassForm = ({ onSubmit, onCancel }) => {
     const [formData, setFormData] = useState({
         title: '',
+        subject: '',
         description: '',
         date: '',
         time: '',
+        end_time: '',
         capacity: 50
     });
 
@@ -33,6 +35,14 @@ const CreateClassForm = ({ onSubmit, onCancel }) => {
                     placeholder="e.g. Advanced Calculus"
                     required
                 />
+                <Input
+                    label="Subject"
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleChange}
+                    placeholder="e.g. Mathematics"
+                    required
+                />
                 <div className="form-group">
                     <label className="form-label">Description</label>
                     <textarea
@@ -55,11 +65,22 @@ const CreateClassForm = ({ onSubmit, onCancel }) => {
                     onChange={handleChange}
                     required
                 />
+            </div>
+
+            <div className="form-row">
                 <Input
-                    label="Time"
+                    label="Start Time"
                     name="time"
                     type="time"
                     value={formData.time}
+                    onChange={handleChange}
+                    required
+                />
+                <Input
+                    label="End Time"
+                    name="end_time"
+                    type="time"
+                    value={formData.end_time}
                     onChange={handleChange}
                     required
                 />

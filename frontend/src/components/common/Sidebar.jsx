@@ -27,24 +27,28 @@ const Sidebar = () => {
                     <span className="item-text">My Classes</span>
                 </NavLink>
 
-                <NavLink
-                    to="/recordings"
-                    className={({ isActive }) => `sidebar-item ${isActive ? 'active' : ''}`}
-                >
-                    <Video size={20} />
-                    <span className="item-text">Recordings</span>
-                </NavLink>
+                {role !== 'student' && (
+                    <NavLink
+                        to="/recordings"
+                        className={({ isActive }) => `sidebar-item ${isActive ? 'active' : ''}`}
+                    >
+                        <Video size={20} />
+                        <span className="item-text">Recordings</span>
+                    </NavLink>
+                )}
+
+                {role !== 'student' && (
+                    <NavLink
+                        to="/calendar"
+                        className={({ isActive }) => `sidebar-item ${isActive ? 'active' : ''}`}
+                    >
+                        <Calendar size={20} />
+                        <span className="item-text">Calendar</span>
+                    </NavLink>
+                )}
 
                 <NavLink
-                    to="/calendar"
-                    className={({ isActive }) => `sidebar-item ${isActive ? 'active' : ''}`}
-                >
-                    <Calendar size={20} />
-                    <span className="item-text">Calendar</span>
-                </NavLink>
-
-                <NavLink
-                    to="/settings"
+                    to="/management"
                     className={({ isActive }) => `sidebar-item ${isActive ? 'active' : ''}`}
                 >
                     <Settings size={20} />

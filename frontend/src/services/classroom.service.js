@@ -21,14 +21,35 @@ const ClassroomService = {
         }
     },
 
+    async getTodayClasses() {
+        try {
+            const response = await client.get('/teacher/today-classes');
+            return response.data;
+        } catch (error) {
+            console.error('Failed to fetch today classes', error);
+            return [];
+        }
+    },
+
+    async getCalendarClasses() {
+        try {
+            const response = await client.get('/teacher/calendar-classes');
+            return response.data;
+        } catch (error) {
+            console.error('Failed to fetch calendar classes', error);
+            return [];
+        }
+    },
+
     async createClass(classData) {
         try {
-            // Requirements: use title, date, time, capacity
             const newRoom = await createRoom({
                 title: classData.title,
+                subject: classData.subject,
                 description: classData.description || '',
                 date: classData.date,
                 time: classData.time,
+                end_time: classData.end_time,
                 capacity: parseInt(classData.capacity) || 50
             });
             return {
@@ -39,6 +60,16 @@ const ClassroomService = {
             };
         } catch (error) {
             console.error('Failed to create room', error);
+            throw error;
+        }
+    },
+
+    async deleteClass(classId) {
+        try {
+            await client.delete(`/classrooms/${classId}`);
+            return true;
+        } catch (error) {
+            console.error('Failed to delete class', error);
             throw error;
         }
     },
@@ -63,7 +94,6 @@ const ClassroomService = {
     },
 
     async getStudentProgress() {
-        // Return initial state
         return {
             completedLessons: 0,
             pendingAssignments: 0,

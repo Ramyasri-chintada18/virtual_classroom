@@ -149,8 +149,35 @@
     padding: var(--space-4);
     display: flex;
     flex-direction: column;
+    gap: var(--space-4);
+}
+
+.room-id-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: var(--space-2);
+}
+
+.copy-link-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: var(--radius-md);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.copy-link-btn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+.copy-link-btn:active {
+    transform: translateY(0);
 }
 
 .room-id-label {

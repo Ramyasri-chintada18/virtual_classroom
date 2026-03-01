@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import Card from '../../components/common/Card';
 import Button from '../../components/common/Button';
 import ClassroomService from '../../services/classroom.service';
@@ -9,11 +9,23 @@ import './TeacherDashboard.css';
 
 const TeacherDashboard = () => {
     const navigate = useNavigate();
+    const { searchQuery } = useOutletContext();
     const [stats, setStats] = useState(null);
     const [classes, setClasses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeModal, setActiveModal] = useState(null); // 'create' | 'details' | null
     const [selectedClass, setSelectedClass] = useState(null);
+    const [copySuccess, setCopySuccess] = useState(false);
+
+    // Filter classes based on search query
+    const filteredClasses = classes.filter(cls => {
+        const title = cls.title || '';
+        const subject = cls.subject || 'General';
+        const query = searchQuery?.toLowerCase() || '';
+        return title.toLowerCase().includes(query) ||
+            subject.toLowerCase().includes(query);
+    });
+
 
     const handleCreateClass = async (formData) => {
         try {
@@ -33,6 +45,15 @@ const TeacherDashboard = () => {
     const handlePrepareRoom = (cls) => {
         setSelectedClass(cls);
         setActiveModal('details');
+        setCopySuccess(false);
+    };
+
+    const handleCopyLink = () => {
+        const link = `${window.location.origin}/classroom/${selectedClass?.id}`;
+        navigator.clipboard.writeText(link).then(() => {
+            setCopySuccess(true);
+            setTimeout(() => setCopySuccess(false), 2000);
+        });
     };
 
     useEffect(() => {
@@ -40,7 +61,7 @@ const TeacherDashboard = () => {
             try {
                 const [statsData, classesData] = await Promise.all([
                     ClassroomService.getTeacherStats(),
-                    ClassroomService.getUpcomingClasses()
+                    ClassroomService.getTodayClasses()
                 ]);
                 setStats(statsData);
                 setClasses(classesData);
@@ -59,8 +80,8 @@ const TeacherDashboard = () => {
         <div className="teacher-dashboard">
             <header className="dashboard-content-header">
                 <div>
-                    <h1>Teacher Dashboard</h1>
-                    <p className="subtitle">Welcome back, Professor!</p>
+                    <h1>Today's Overview</h1>
+                    <p className="subtitle">Manage your classes for {new Date().toLocaleDateString()}</p>
                 </div>
                 <Button variant="primary" onClick={() => setActiveModal('create')}>
                     Create New Class
@@ -82,7 +103,12 @@ const TeacherDashboard = () => {
                     <div className="class-details-popup">
                         <p className="details-message">This classroom is now ready. Share the following Room ID with your students to let them join.</p>
                         <div className="room-id-container">
-                            <span className="room-id-label">Room ID:</span>
+                            <div className="room-id-header">
+                                <span className="room-id-label">Room ID:</span>
+                                <button className="copy-link-btn" onClick={handleCopyLink}>
+                                    {copySuccess ? 'Copied!' : 'Copy Link'}
+                                </button>
+                            </div>
                             <code className="room-id-value">{selectedClass?.id}</code>
                         </div>
                         <div className="modal-actions">
@@ -94,44 +120,60 @@ const TeacherDashboard = () => {
             </Modal>
 
             <div className="stats-grid">
-                <Card title="Active Classes">
-                    <div className="stat-value">{stats?.activeClasses || 0}</div>
-                </Card>
-                <Card title="Total Students">
-                    <div className="stat-value">{stats?.totalStudents || 0}</div>
+                <Card title="Today's Classes">
+                    <div className="stat-value">{classes.length}</div>
                 </Card>
                 <Card title="Engagement Rate">
                     <div className="stat-value">{stats?.averageEngagement || '0%'}</div>
                 </Card>
+                <Card title="Active Classes">
+                    <div className="stat-value">{stats?.activeClasses || 0}</div>
+                </Card>
             </div>
 
             <section className="upcoming-classes">
-                <h3>My Upcoming Classes</h3>
+                <h3>Today's Classes</h3>
                 <div className="classes-list">
-                    {classes.map(cls => (
-                        <Card key={cls.id} className="class-item-card">
-                            <div className="class-info">
-                                <h4>{cls.title}</h4>
-                                {cls.status === 'live' ? (
-                                    <p className="live-status">CLASS IS LIVE</p>
-                                ) : (
-                                    <div className="schedule-info">
-                                        <p>Date: {cls.date}</p>
-                                        <p>Time: {cls.time}</p>
+                    {filteredClasses.length === 0 ? (
+                        <div className="no-classes-message">
+                            <p>{searchQuery ? `No classes found matching "${searchQuery}"` : "No classes scheduled for today."}</p>
+                        </div>
+                    ) : (
+                        filteredClasses.map(cls => (
+                            <Card key={cls.id} className="class-item-card">
+                                <div className="class-info">
+                                    <div className="class-header-row">
+                                        <h4>{cls.title}</h4>
+                                        <span className={`status-badge ${cls.status}`}>{cls.status}</span>
                                     </div>
-                                )}
-                                <span className="student-count">{cls.students} students enrolled</span>
-                            </div>
-                            <Button
-                                size="sm"
-                                variant={cls.status === 'live' ? 'primary' : 'outline'}
-                                onClick={() => cls.status === 'live' ? handleJoinClass(cls.id) : handlePrepareRoom(cls)}
-                                className={cls.status === 'live' ? 'btn-join' : 'btn-prepare'}
-                            >
-                                {cls.status === 'live' ? 'Join Now' : 'Prepare Room'}
-                            </Button>
-                        </Card>
-                    ))}
+                                    <p className="class-subject">Subject: {cls.subject}</p>
+                                    <div className="schedule-info">
+                                        <p>Time: {cls.start_time} - {cls.end_time}</p>
+                                    </div>
+                                    <span className="student-count">{cls.students_enrolled} students enrolled</span>
+                                </div>
+                                <div className="card-actions">
+                                    <Button
+                                        size="sm"
+                                        variant="ghost"
+                                        onClick={() => {
+                                            const link = `${window.location.origin}/classroom/${cls.id}`;
+                                            navigator.clipboard.writeText(link).then(() => alert('Link copied!'));
+                                        }}
+                                    >
+                                        Copy Link
+                                    </Button>
+                                    <Button
+                                        size="sm"
+                                        variant={cls.status === 'live' ? 'primary' : 'outline'}
+                                        onClick={() => cls.status === 'live' ? handleJoinClass(cls.id) : handlePrepareRoom(cls)}
+                                    >
+                                        {cls.status === 'live' ? 'Join Now' : 'Prepare Room'}
+                                    </Button>
+                                </div>
+                            </Card>
+                        ))
+                    )}
                 </div>
             </section>
         </div>
