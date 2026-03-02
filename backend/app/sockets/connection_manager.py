@@ -2,7 +2,7 @@ import json
 import asyncio
 from typing import List, Dict
 from uuid import UUID
-from fastapi import WebSocket
+from fastapi import WebSocket, WebSocketDisconnect
 from redis.asyncio import Redis
 from app.core.config import settings
 
@@ -35,9 +35,9 @@ class ConnectionManager:
                 if connection != exclude:
                     try:
                         await connection.send_text(message)
-                    except RuntimeError:
+                    except (RuntimeError, WebSocketDisconnect):
                         # Handle disconnected clients gracefully
-                        pass
+                        self.disconnect(room_id, connection)
         
         # 2. Publish to Redis (for other workers)
         # await self.redis.publish(f"room:{room_id}", message)

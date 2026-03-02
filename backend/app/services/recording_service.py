@@ -9,7 +9,7 @@ class RecordingService:
     def __init__(self):
         self.storage = StorageService()
 
-    async def save_recording(self, room_id: UUID, file: UploadFile, user_id: PydanticObjectId):
+    async def save_recording(self, room_id: UUID, file: UploadFile, user_id: PydanticObjectId, duration_seconds: int = 0):
         # 1. Upload to storage
         upload_result = await self.storage.upload_file(file, room_id)
         
@@ -19,7 +19,8 @@ class RecordingService:
             uploaded_by=user_id,
             filename=upload_result["filename"],
             file_url=upload_result["url"],
-            size_bytes=upload_result["size"]
+            size_bytes=upload_result["size"],
+            duration_seconds=duration_seconds
         )
         await recording.insert()
         return recording
@@ -33,7 +34,11 @@ class RecordingService:
     async def delete_recording(self, recording_id: UUID):
         recording = await Recording.find_one(Recording.id == recording_id)
         if recording:
-            # Note: In a real app, you'd also delete the file from StorageService
+            # Delete file from storage
+            file_path = os.path.join(self.storage.upload_dir, recording.filename)
+            if os.path.exists(file_path):
+                os.remove(file_path)
+                
             await recording.delete()
             return {"status": "success", "message": "Recording deleted"}
         return {"status": "error", "message": "Recording not found"}

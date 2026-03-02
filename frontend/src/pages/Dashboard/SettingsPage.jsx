@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Card from '../../components/common/Card';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import { useAuth } from '../../store/AuthStore';
 import ClassroomService from '../../services/classroom.service';
 import recordingService from '../../services/recording_service';
-import { BookOpen, Video, Trash2, ExternalLink, Share2, Play, X } from 'lucide-react';
+import { BookOpen, Video, Trash2, ExternalLink, Share2, Play, Download, X, Clock, User, Link as LinkIcon } from 'lucide-react';
 import './DashboardPages.css';
 
 /* ──────────────────────────────────────────────
@@ -69,14 +70,112 @@ const VideoModal = ({ recording, onClose }) => {
     );
 };
 
+const ClassDetailsModal = ({ cls, onClose }) => {
+    const [copied, setCopied] = React.useState(false);
+    const meetingLink = `${window.location.origin}/classroom/${cls.id}`;
+
+    const handleCopyLink = () => {
+        navigator.clipboard.writeText(meetingLink);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
+
+    useEffect(() => {
+        const handleKey = (e) => { if (e.key === 'Escape') onClose(); };
+        document.addEventListener('keydown', handleKey);
+        return () => document.removeEventListener('keydown', handleKey);
+    }, [onClose]);
+
+    return (
+        <div className="vm-overlay" onClick={onClose}>
+            <button className="vm-overlay-close" onClick={onClose} title="Close (Esc)">
+                <X size={28} />
+            </button>
+
+            <div className="cd-modal" onClick={(e) => e.stopPropagation()}>
+                {/* Gradient Header */}
+                <div className="cd-gradient-header">
+                    <div className="cd-header-top">
+                        <span className={`cd-status-pill ${cls.status}`}>{cls.status}</span>
+                        <button className="cd-close-x" onClick={onClose}><X size={18} /></button>
+                    </div>
+                    <h2 className="cd-class-title">{cls.title}</h2>
+                    <p className="cd-class-subtitle">Virtual Classroom Session</p>
+                </div>
+
+                {/* Info Cards */}
+                <div className="cd-body">
+                    <div className="cd-cards-row">
+                        <div className="cd-card">
+                            <div className="cd-card-icon instructor-icon">
+                                <User size={20} />
+                            </div>
+                            <div className="cd-card-text">
+                                <span className="cd-card-label">Instructor</span>
+                                <span className="cd-card-value">{cls.instructor || 'Not assigned'}</span>
+                            </div>
+                        </div>
+                        <div className="cd-card">
+                            <div className="cd-card-icon schedule-icon">
+                                <Clock size={20} />
+                            </div>
+                            <div className="cd-card-text">
+                                <span className="cd-card-label">Schedule</span>
+                                <span className="cd-card-value">{cls.date}</span>
+                                <span className="cd-card-sub">{cls.time || 'TBD'}</span>
+                            </div>
+                        </div>
+                        <div className="cd-card">
+                            <div className="cd-card-icon students-icon">
+                                <User size={20} />
+                            </div>
+                            <div className="cd-card-text">
+                                <span className="cd-card-label">Students</span>
+                                <span className="cd-card-value">{cls.students ?? 0} enrolled</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Meeting Link */}
+                    <div className="cd-link-section">
+                        <div className="cd-link-label">
+                            <LinkIcon size={14} />
+                            <span>Meeting Link</span>
+                        </div>
+                        <div className="cd-link-row">
+                            <input
+                                type="text"
+                                value={meetingLink}
+                                readOnly
+                                className="cd-link-input"
+                                onClick={(e) => e.target.select()}
+                            />
+                            <button className={`cd-copy-btn ${copied ? 'copied' : ''}`} onClick={handleCopyLink}>
+                                {copied ? '✓ Copied!' : 'Copy'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Footer */}
+                <div className="cd-modal-footer">
+                    <button className="cd-close-btn-footer" onClick={onClose}>Close</button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 
 const SettingsPage = ({ view }) => {
     const { user } = useAuth();
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState(view === 'management' ? 'classes' : 'profile');
     const [classes, setClasses] = useState([]);
     const [recordings, setRecordings] = useState([]);
     const [loading, setLoading] = useState(false);
     const [playingVideo, setPlayingVideo] = useState(null);
+    const [viewingClass, setViewingClass] = useState(null);
 
     useEffect(() => {
         if (activeTab === 'classes') {
@@ -134,8 +233,32 @@ const SettingsPage = ({ view }) => {
         }
     };
 
+    const handleDownload = async (url, filename) => {
+        try {
+            const response = await fetch(url);
+            const blob = await response.blob();
+            const blobUrl = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = blobUrl;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(blobUrl);
+        } catch (error) {
+            console.error("Download failed:", error);
+            alert("Failed to download the file.");
+        }
+    };
+
     const handleShare = (videoUrl) => {
-        navigator.clipboard.writeText(videoUrl);
+        // Ensure videoUrl is absolute if it's just a path
+        let fullUrl = videoUrl;
+        if (videoUrl && !videoUrl.startsWith('http')) {
+            const backendBase = (import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1').replace('/api/v1', '');
+            fullUrl = `${backendBase}${videoUrl}`;
+        }
+        navigator.clipboard.writeText(fullUrl);
         alert('Recording link copied to clipboard!');
     };
 
@@ -193,7 +316,7 @@ const SettingsPage = ({ view }) => {
                                                     <p>{cls.date} at {cls.time}</p>
                                                 </div>
                                                 <div className="item-actions">
-                                                    <Button size="sm" variant="ghost">View</Button>
+                                                    <Button size="sm" variant="ghost" onClick={() => setViewingClass(cls)}>View</Button>
                                                     {user.role === 'teacher' && (
                                                         <Button
                                                             size="sm"
@@ -227,6 +350,9 @@ const SettingsPage = ({ view }) => {
                                                     <button className="nav-action-btn" title="Play Recording" onClick={() => setPlayingVideo(rec)}>
                                                         <Play size={16} />
                                                     </button>
+                                                    <button className="nav-action-btn" title="Download Recording" onClick={() => handleDownload(rec.video_url, `recording_${rec.id}.webm`)}>
+                                                        <Download size={16} />
+                                                    </button>
                                                     <button className="nav-action-btn" title="Share Recording" onClick={() => handleShare(rec.video_url)}>
                                                         <Share2 size={16} />
                                                     </button>
@@ -258,6 +384,14 @@ const SettingsPage = ({ view }) => {
                 <VideoModal
                     recording={playingVideo}
                     onClose={() => setPlayingVideo(null)}
+                />
+            )}
+
+            {/* Class Details Modal */}
+            {viewingClass && (
+                <ClassDetailsModal
+                    cls={viewingClass}
+                    onClose={() => setViewingClass(null)}
                 />
             )}
         </div>

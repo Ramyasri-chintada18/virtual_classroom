@@ -11,11 +11,12 @@ const toAbsoluteUrl = (url) => {
 };
 
 const recordingService = {
-    uploadRecording: async (roomId, blob) => {
+    uploadRecording: async (roomId, blob, durationSeconds = 0) => {
         const token = localStorage.getItem('token');
         const formData = new FormData();
         const filename = `recording_${Date.now()}.webm`;
         formData.append('file', blob, filename);
+        formData.append('duration_seconds', durationSeconds);
 
         const response = await axios.post(`${API_URL}/recordings/${roomId}/upload`, formData, {
             headers: {

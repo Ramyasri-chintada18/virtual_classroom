@@ -22,6 +22,7 @@ class TeacherRecordingResponse(BaseModel):
     subject: str
     date: str
     duration: str
+    duration_seconds: int = 0
     video_url: str
     description: Optional[str] = None
     uploaded_at: datetime

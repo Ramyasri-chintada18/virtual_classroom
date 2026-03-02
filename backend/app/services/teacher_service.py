@@ -59,6 +59,7 @@ class TeacherService:
             # Duration formatting
             mins, secs = divmod(rec.duration_seconds, 60)
             duration_str = f"{mins}m {secs}s"
+            print(f"DEBUG: TeacherService: rec_id={rec.id}, duration_seconds={rec.duration_seconds}")
             
             result.append(TeacherRecordingResponse(
                 id=rec.id,
@@ -66,6 +67,7 @@ class TeacherService:
                 subject=rec.subject or (room.subject if room else "General"),
                 date=rec.created_at.strftime("%Y-%m-%d"),
                 duration=duration_str,
+                duration_seconds=rec.duration_seconds,
                 video_url=rec.file_url,
                 description=rec.description,
                 uploaded_at=rec.created_at

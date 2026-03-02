@@ -9,7 +9,7 @@ import socketService from '../services/socket.service';
 import { useAuth } from '../store/AuthStore';
 import Modal from '../components/common/Modal';
 import Button from '../components/common/Button';
-import { Video, Mic, MicOff, VideoOff, Settings } from 'lucide-react';
+import { Video, Mic, MicOff, VideoOff, Settings, ShieldAlert } from 'lucide-react';
 
 const ClassroomLayout = () => {
     const navigate = useNavigate();
@@ -23,7 +23,11 @@ const ClassroomLayout = () => {
     const [messages, setMessages] = useState([]);
 
     // Media States
-    const [localStream, setLocalStream] = useState(null);
+    const [localStream, _setLocalStream] = useState(null);
+    const setLocalStream = (stream) => {
+        localStreamRef.current = stream;
+        _setLocalStream(stream);
+    };
     const [micEnabled, setMicEnabled] = useState(false);
     const [videoEnabled, setVideoEnabled] = useState(false);
     const [isSharing, setIsSharing] = useState(false);
@@ -33,6 +37,7 @@ const ClassroomLayout = () => {
     const [showRecordModal, setShowRecordModal] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [permissionDenied, setPermissionDenied] = useState(false);
+    const localStreamRef = useRef(null);
 
     // Socket Connection
     useEffect(() => {
@@ -62,16 +67,12 @@ const ClassroomLayout = () => {
     };
 
     useEffect(() => {
-        // Explicitly clear any media holding when component unmounts
         return () => {
-            if (localStream) {
-                localStream.getTracks().forEach(track => {
-                    track.stop();
-                    localStream.removeTrack(track);
-                });
+            if (localStreamRef.current) {
+                localStreamRef.current.getTracks().forEach(track => track.stop());
             }
         };
-    }, [localStream]);
+    }, []); // Empty dependencies = only runs on unmount
 
     // HARDWARE TOGGLES: Actually stop the track so the camera light turns off
     const toggleMic = async () => {
@@ -83,8 +84,8 @@ const ClassroomLayout = () => {
                     track.stop();
                     localStream.removeTrack(track);
                 });
-                // If video is also off (or no tracks left), kill the whole stream object
-                if (localStream.getTracks().length === 0 || !videoEnabled) {
+                // If no tracks left, kill the whole stream object to turn off browser indicator
+                if (localStream.getTracks().length === 0) {
                     setLocalStream(null);
                 }
             }
@@ -97,9 +98,9 @@ const ClassroomLayout = () => {
 
                 if (localStream) {
                     localStream.addTrack(track);
+                    // Force a re-render by creating a "new" stream container for the same tracks
                     setLocalStream(new MediaStream(localStream.getTracks()));
                 } else {
-                    // Create new stream if none exists
                     setLocalStream(new MediaStream([track]));
                 }
 
@@ -107,6 +108,7 @@ const ClassroomLayout = () => {
                 setPermissionDenied(false);
             } catch (err) {
                 console.error("Could not access microphone", err);
+                setPermissionDenied(true);
                 alert("Microphone permission denied or device not found.");
             }
         }
@@ -121,8 +123,7 @@ const ClassroomLayout = () => {
                     track.stop();
                     localStream.removeTrack(track);
                 });
-                // If mic is also off (or no tracks left), kill the whole stream object
-                if (localStream.getTracks().length === 0 || !micEnabled) {
+                if (localStream.getTracks().length === 0) {
                     setLocalStream(null);
                 }
             }
@@ -137,7 +138,6 @@ const ClassroomLayout = () => {
                     localStream.addTrack(track);
                     setLocalStream(new MediaStream(localStream.getTracks()));
                 } else {
-                    // Create new stream if none exists
                     setLocalStream(new MediaStream([track]));
                 }
 
@@ -145,6 +145,7 @@ const ClassroomLayout = () => {
                 setPermissionDenied(false);
             } catch (err) {
                 console.error("Could not access camera", err);
+                setPermissionDenied(true);
                 alert("Camera permission denied or device not found.");
             }
         }
@@ -181,6 +182,7 @@ const ClassroomLayout = () => {
     // Recording Logic
     const mediaRecorderRef = useRef(null);
     const recordedChunksRef = useRef([]);
+    const recordingStartTimeRef = useRef(null);
 
     const handleStartRecording = async () => {
         setShowRecordModal(false);
@@ -202,13 +204,18 @@ const ClassroomLayout = () => {
             };
 
             mediaRecorder.onstop = async () => {
+                const stopTime = Date.now();
+                const startTime = recordingStartTimeRef.current || stopTime;
+                const durationMs = stopTime - startTime;
+                const durationSeconds = Math.max(1, Math.round(durationMs / 1000));
+
                 const blob = new Blob(recordedChunksRef.current, {
                     type: 'video/webm'
                 });
 
                 try {
-                    console.log('Uploading recording...');
-                    await recordingService.uploadRecording(roomId, blob);
+                    console.log('Uploading recording with duration:', durationSeconds);
+                    await recordingService.uploadRecording(roomId, blob, durationSeconds);
                     console.log('Recording uploaded successfully');
                     setShowSuccessModal(true);
                 } catch (error) {
@@ -221,8 +228,10 @@ const ClassroomLayout = () => {
                     stream.getTracks().forEach(track => track.stop());
                 }
                 setPendingRecordStream(null);
+                recordingStartTimeRef.current = null;
             };
 
+            recordingStartTimeRef.current = Date.now();
             mediaRecorder.start();
             setIsRecording(true);
         } catch (error) {
@@ -267,6 +276,17 @@ const ClassroomLayout = () => {
     const handleLeave = () => {
         if (window.confirm('Are you sure you want to leave the class?')) {
             if (isRecording) handleStopRecording();
+
+            // Explicitly stop all tracks to ensure hardware light/indicator turns off immediately
+            if (localStreamRef.current) {
+                localStreamRef.current.getTracks().forEach(track => track.stop());
+                localStreamRef.current = null;
+            }
+            if (screenStream) {
+                screenStream.getTracks().forEach(track => track.stop());
+            }
+
+            // Navigate back to the dashboard
             navigate('/dashboard');
         }
     };
@@ -296,10 +316,20 @@ const ClassroomLayout = () => {
                             />
                         ) : (
                             <div className="preview-placeholder">
-                                <div className="avatar-circle">
-                                    {user?.full_name?.charAt(0) || 'U'}
-                                </div>
-                                <p>Camera is off</p>
+                                {permissionDenied ? (
+                                    <div className="permission-error-prejoin">
+                                        <ShieldAlert size={48} className="error-icon" />
+                                        <p>Hardware Access Denied</p>
+                                        <small>Check your browser settings</small>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div className="avatar-circle">
+                                            {user?.full_name?.charAt(0) || 'U'}
+                                        </div>
+                                        <p>Camera is off</p>
+                                    </>
+                                )}
                             </div>
                         )}
 

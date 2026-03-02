@@ -42,6 +42,41 @@ const RecordingsPage = () => {
         }
     };
 
+    const handleDownload = async (url, filename) => {
+        try {
+            const response = await fetch(url);
+            const blob = await response.blob();
+            const blobUrl = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = blobUrl;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(blobUrl);
+        } catch (error) {
+            console.error("Download failed:", error);
+            alert("Failed to download the file.");
+        }
+    };
+
+    const formatDuration = (val) => {
+        // If it's a string like "0m 10s", try to extract numbers
+        if (typeof val === 'string' && val.includes('m')) {
+            const parts = val.match(/\d+/g);
+            if (parts && parts.length >= 2) {
+                return `${parts[0].padStart(2, '0')}:${parts[1].padStart(2, '0')}`;
+            }
+        }
+
+        const seconds = parseInt(val);
+        if (isNaN(seconds) || seconds < 0) return '00:00';
+
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    };
+
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleDateString();
     };
@@ -76,11 +111,12 @@ const RecordingsPage = () => {
                 <div className="recordings-grid">
                     {filteredRecordings.map(rec => {
                         const recId = rec.id || rec.recording_id;
+                        const videoUrl = rec.video_url || rec.file_url;
                         return (
                             <Card key={recId} className="recording-card-detailed">
                                 <div className="recording-preview">
                                     <Video size={32} />
-                                    <span className="duration-tag">{rec.duration || '0:00'}</span>
+                                    <span className="duration-tag">{formatDuration(rec.duration_seconds || rec.duration)}</span>
                                 </div>
                                 <div className="recording-content">
                                     <div className="recording-header">
@@ -95,24 +131,26 @@ const RecordingsPage = () => {
                                     </div>
                                     <div className="recording-actions">
                                         <a
-                                            href={rec.video_url || rec.file_url}
+                                            href={videoUrl}
                                             target="_blank"
                                             rel="noreferrer"
                                             className="action-btn play"
+                                            title="Play Recording"
                                         >
                                             <Play size={16} /> Play
                                         </a>
-                                        <a
-                                            href={rec.video_url || rec.file_url}
-                                            download
+                                        <button
+                                            onClick={() => handleDownload(videoUrl, `recording_${recId}.webm`)}
                                             className="action-btn download"
+                                            title="Download Recording"
                                         >
                                             <Download size={16} />
-                                        </a>
+                                        </button>
                                         {user.role === 'teacher' && (
                                             <button
                                                 className="action-btn delete"
                                                 onClick={() => handleDelete(recId)}
+                                                title="Delete Recording"
                                             >
                                                 <Trash2 size={16} />
                                             </button>
